@@ -5,7 +5,7 @@ const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
-
+const mod = require('./models/model.js');
 const app = express();
 
 app.set('views', `${__dirname}/views`);
@@ -38,8 +38,16 @@ app.get('/links',
     });
 });
 
-app.post('/links', 
-(req, res, next) => {
+
+
+app.post('/signup', (req, res) => {
+  var base = new mod('users');
+  //console.log('=============', base.create );
+  base.create(req.body);
+  res.send();
+});
+
+app.post('/links', (req, res, next) => {
   var url = req.body.url;
   if (!models.Links.isValidUrl(url)) {
     // send back a 404 if link is not valid
@@ -73,6 +81,8 @@ app.post('/links',
       res.status(200).send(link);
     });
 });
+
+
 
 /************************************************************/
 // Write your authentication routes here

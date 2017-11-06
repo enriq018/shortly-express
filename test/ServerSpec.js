@@ -123,8 +123,8 @@ describe('', function() {
     });
   });
 
-  xdescribe('Account Creation:', function() {
-
+  describe('Account Creation:', function() {
+      
     it('signup creates a new user record', function(done) {
       var options = {
         'method': 'POST',
@@ -136,6 +136,9 @@ describe('', function() {
       };
 
       request(options, function(error, res, body) {
+        // console.log('********** res', res)
+        // console.log('********** ', body)
+
         var queryString = 'SELECT * FROM users where username = "Samantha"';
         db.query(queryString, function(err, rows) {
           if (err) { done(err); }
