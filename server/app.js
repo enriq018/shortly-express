@@ -18,18 +18,17 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 
-app.get('/', 
-(req, res) => {
+/************************************************************/
+app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/create', 
-(req, res) => {
+
+app.get('/create', (req, res) => {
   res.render('index');
 });
 
-app.get('/links', 
-(req, res, next) => {
+app.get('/links', (req, res, next) => {
   models.Links.getAll()
     .then(links => {
       res.status(200).send(links);
@@ -39,18 +38,54 @@ app.get('/links',
     });
 });
 
+/************************************************************/
 
+app.get('/signup', (err, res) => {
+  res.render('signup');
+});
 
 app.post('/signup', (req, res) => {
-  var base = new mod('users');
-  req.body.salt = 'hello';
-  var user = new createUser();
-  // console.log('=============', user.compare );
-
-  user.create(req.body);
-  // base.create(req.body);
-  res.send();
+  var newObj = {username: req.body.username};
+  var objWithPassword = {username: req.body.username, password: req.body.password};
+  
+  models.Users.get(newObj)
+    .then(username => {
+      console.log(username);
+      if (username) {
+        res.redirect('/signup');
+      } else {
+        models.Users.create(objWithPassword)
+          .then(() => {
+            res.redirect('/');
+          });
+      }
+    }).catch();
 });
+
+/************************************************************/
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', (req, res) => {
+  var newObj = {username: req.body.username};
+  var objWithPassword = {username: req.body.username, password: req.body.password};
+  models.Users.get(newObj).then(username => {
+    if (username) {
+      console.log('function!!!!', models.Users.compare(req.body.password, username.password, username.salt));
+      var result = models.Users.compare(req.body.password, username.password, username.salt);
+      if (result) {
+        res.redirect('/');
+      } else {
+        res.redirect('/login');
+      }  
+    } else { 
+      res.redirect('/login');  
+    }
+  }).catch();
+});
+
 
 app.post('/links', (req, res, next) => {
   var url = req.body.url;

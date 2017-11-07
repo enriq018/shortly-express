@@ -46,5 +46,5 @@ class Users extends Model {
   }
 }
 
-// module.exports = new Users();
-module.exports = Users;
+module.exports = new Users();
+// module.exports = Users;
