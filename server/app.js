@@ -50,7 +50,7 @@ app.post('/signup', (req, res) => {
   
   models.Users.get(newObj)
     .then(username => {
-      console.log(username);
+      //console.log(username);
       if (username) {
         res.redirect('/signup');
       } else {
@@ -73,7 +73,7 @@ app.post('/login', (req, res) => {
   var objWithPassword = {username: req.body.username, password: req.body.password};
   models.Users.get(newObj).then(username => {
     if (username) {
-      console.log('function!!!!', models.Users.compare(req.body.password, username.password, username.salt));
+      //console.log('function!!!!', models.Users.compare(req.body.password, username.password, username.salt));
       var result = models.Users.compare(req.body.password, username.password, username.salt);
       if (result) {
         res.redirect('/');
