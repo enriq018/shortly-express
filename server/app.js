@@ -7,6 +7,7 @@ const Auth = require('./middleware/auth');
 const models = require('./models');
 const mod = require('./models/model.js');
 const app = express();
+const createUser = require('./models/user.js');
 
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'ejs');
@@ -42,8 +43,12 @@ app.get('/links',
 
 app.post('/signup', (req, res) => {
   var base = new mod('users');
-  //console.log('=============', base.create );
-  base.create(req.body);
+  req.body.salt = 'hello';
+  var user = new createUser();
+  // console.log('=============', user.compare );
+
+  user.create(req.body);
+  // base.create(req.body);
   res.send();
 });
 
