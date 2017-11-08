@@ -4,6 +4,8 @@ const utils = require('./lib/hashUtils');
 const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
+const cookie = require('./middleware/cookieParser');
+
 const models = require('./models');
 const mod = require('./models/model.js');
 const app = express();
@@ -15,11 +17,17 @@ app.use(partials());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
+//////////////////////////////////////////////////////////
+app.use(cookie);
+app.use(Auth.createSession);
+
+
 
 
 
 /************************************************************/
 app.get('/', (req, res) => {
+  console.log('=======================',req.headers)
   res.render('index');
 });
 
@@ -73,6 +81,7 @@ app.post('/login', (req, res) => {
   var objWithPassword = {username: req.body.username, password: req.body.password};
   models.Users.get(newObj).then(username => {
     if (username) {
+ 
       //console.log('function!!!!', models.Users.compare(req.body.password, username.password, username.salt));
       var result = models.Users.compare(req.body.password, username.password, username.salt);
       if (result) {
